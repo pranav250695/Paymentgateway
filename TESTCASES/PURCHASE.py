@@ -5,15 +5,12 @@ import datetime
 import openpyxl
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
+from Config.config import TESTCLASS
 
-driver = webdriver.Chrome(executable_path="C:\ChromeWD\chromedriver.exe")
+driver = webdriver.Chrome(executable_path=TESTCLASS.CHROME_PATH)
 driver.get('https://sandbox.isgpay.com/KotakPGRedirect/')
 driver.maximize_window()
-path = "C:\\Users\\pranav4013\\PycharmProjects\\pythonProject1\\PG\\TESTDATA\\Datafile.xlsx"
-ss = "C:\\Users\\pranav4013\\PycharmProjects\\pythonProject1\\PG\\TESTCASES\\SCREENSHOT"
-FILE_TXN = "C:\\Users\\pranav4013\\PycharmProjects\\pythonProject1\\PG\\TESTDATA\\TRANSACTIONFILE.xlsx"
-
-row = Xlutils.GetRowCount(path,"Sheet1")
+row = Xlutils.GetRowCount(TESTCLASS.DATA_PATH,"Sheet1")
 logging.basicConfig(filename="C:\\Users\\pranav4013\\PycharmProjects\\pythonProject1\\PG\\PG LOG\\TEST_LOG.log",
                     format='%(asctime)s: %(levelname)s: %(message)s:',
                     datefmt='%m/%d/%Y %I:%M:%S %p'
@@ -24,15 +21,15 @@ logger.setLevel(logging.DEBUG)
 #loop will read data from Excel file
 
 for r in range(2,row+1):
-    Amount = Xlutils.ReadData(path,"Sheet1",r,1)
-    TXN_ID = Xlutils.ReadData(path, "Sheet1", r, 2)
-    Merchant_id = Xlutils.ReadData(path, "Sheet1", r, 3)
-    Terminal_id = Xlutils.ReadData(path, "Sheet1", r, 4)
-    MCC = Xlutils.ReadData(path, "Sheet1", r, 5)
-    CARD_NUM = Xlutils.ReadData(path,"Sheet1", r, 6)
-    CARD_Exipry = Xlutils.ReadData(path, "Sheet1", r, 7)
-    CVV = Xlutils.ReadData(path, "Sheet1", r, 8)
-    OTP = Xlutils.ReadData(path, "Sheet1", r, 9)
+    Amount = Xlutils.ReadData(TESTCLASS.DATA_PATH,"Sheet1",r,1)
+    TXN_ID = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 2)
+    Merchant_id = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 3)
+    Terminal_id = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 4)
+    MCC = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 5)
+    CARD_NUM = Xlutils.ReadData(TESTCLASS.DATA_PATH,"Sheet1", r, 6)
+    CARD_Exipry = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 7)
+    CVV = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 8)
+    OTP = Xlutils.ReadData(TESTCLASS.DATA_PATH, "Sheet1", r, 9)
     #first Page input fields
     print('---First Page Start---')
     logger.debug("First Page Start")
@@ -89,27 +86,27 @@ for r in range(2,row+1):
     # fifth Page result saved in SCREENSHOT FOLDER and LOGS generated in PGLOG folder
     # Message = driver.find_element_by_xpath("/html/body/table[2]/tbody/tr[10]/td[2]").text
     timestamp = datetime.datetime.now().strftime('%d_%m_%Y_%H_%M_%S')
-    ss = driver.get_screenshot_as_file('SCREENSHOT\\' 'PG' + timestamp + '.png')
+    TESTCLASS.SCREENSHOT = driver.get_screenshot_as_file('SCREENSHOT\\' 'PG' + timestamp + '.png')
     print('---End Third Page Start---')
     logger.info("End Third Page Start")
     print(Message)
     if Message == "Success":
         print("transaction successfull")
-        Xlutils.WriteData(path,'Sheet1',r,10,"Test case passed")
+        Xlutils.WriteData(TESTCLASS.DATA_PATH,'Sheet1',r,10,"Test case passed")
         driver.get("https://sandbox.isgpay.com/KotakPGRedirect/")
         logger.info("Transaction sccessfull")
     else:
         print("transaction failed")
-        Xlutils.WriteData(path, 'Sheet1', r, 10, "Test case failed")
+        Xlutils.WriteData(TESTCLASS.DATA_PATH, 'Sheet1', r, 10, "Test case failed")
         logger.error("Transaction Failed")
 
-    Xlutils.WriteData(FILE_TXN,"Sheet",r,1,Merchant_txn_number)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 2, Merchant_id)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 3, Terminal_id)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 4, Amount)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 5, Response_code)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 6, Message)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 7, RRN)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 8, Authcode)
-    Xlutils.WriteData(FILE_TXN, "Sheet", r, 9, Cardnum)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE,"Sheet",r,1,Merchant_txn_number)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 2, Merchant_id)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 3, Terminal_id)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 4, Amount)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 5, Response_code)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 6, Message)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 7, RRN)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 8, Authcode)
+    Xlutils.WriteData(TESTCLASS.TXN_DATA_FILE, "Sheet", r, 9, Cardnum)
 
